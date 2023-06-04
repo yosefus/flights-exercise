@@ -6,25 +6,19 @@ app.use(require('cors')())
 
 const { flights } = require('./data')
 
+app.all('/test', (req, res) => res.send({ message: 'every thing working just fine!' }))
+
 app.post('/flights', (req, res) => {
    const flight = req.body;
 
-   if (
-      !flight.flightNumber ||
-      !flight.timeDepart ||
-      !flight.timeArrive ||
-      !flight.cityDepart ||
-      !flight.cityArrive ||
-      !flight.gate
-   ) {
+   if (!flight.flightNumber || !flight.timeDepart || !flight.timeArrive ||
+      !flight.cityDepart || !flight.cityArrive || !flight.gate)
       return res.status(400).json({ message: 'Missing required data' });
-   }
+
 
    const maxId = Math.max(...flights.map((f) => f.id));
    flight.id = maxId + 1;
-
    flights.push(flight);
-
    res.status(201).json(flight);
 });
 
@@ -44,9 +38,7 @@ app.get('/flights/:id', (req, res) => {
    res.json(flight);
 });
 
-app.get('/flights', (req, res) => {
-   res.json(flights);
-});
+app.get('/flights', (req, res) => res.json(flights));
 
 app.delete('/flights/:id', (req, res) => {
    const id = parseInt(req.params.id);
